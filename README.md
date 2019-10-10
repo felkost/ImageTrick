@@ -14,11 +14,11 @@ https://drive.google.com/drive/folders/1O4PgiB72-AdqDoYVmNHvkOy_1Am_igBO
 
 ## Установка
   ### Linux:
-    * ``` cd Path/ImageTrick/main ```
-    * ``` conda create -n new_environment python=3.6 ```
-    * ``` conda activate new_environment ```
-    * ``` while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt ```
-    * ``` ./TUIprogram.sh ```
+    * cd Path/ImageTrick/main
+    * conda create -n new_environment python=3.6
+    * conda activate new_environment
+    * while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
+    * ./TUIprogram.sh
 
 ## Приклад 
     ![picture](Images/example.png)
