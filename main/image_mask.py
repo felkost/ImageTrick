@@ -13,7 +13,7 @@ def image_mask(color, filename):
     imgHSV = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
     # create the Mask
-    mask = cv2.inRange(imgHSV, def_color, rgb_color)
+    mask = cv2.inRange(img, def_color, rgb_color)
 
     res = cv2.bitwise_and(img, img, mask=mask)
     cv2.imwrite(mydir + '/Output6/res.jpg', res)
