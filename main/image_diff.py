@@ -2,11 +2,12 @@
 from skimage.measure import compare_ssim
 import imutils
 import cv2
+import os
 
 
 def image_diff(image1, image2, label1, label2):
     # load the two input image
-    path = '/home/mickle/PycharmProjects/TUI/Output6/'
+    path = os.getcwd()+'/Output5/'
     imageA = cv2.imread(image1)
     imageA = resize_image(imageA)
     imageB = cv2.imread(image2)

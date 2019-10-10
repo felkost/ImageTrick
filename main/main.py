@@ -23,7 +23,9 @@ class MyWin(QtWidgets.QMainWindow):
         self.modified5 = []
         self.task6 = []
         self.task2 = []
-        self.Path = '/home/mickle/PycharmProjects/TUI/Input/'
+        self.Path = '/home/mickle/PycharmProjects/TUI/InputFocus/'
+        self.cwd = os.getcwd()
+        print(self.cwd)
 
         self.ui.actionOpen.triggered.connect(lambda: self.openFiles(self.ui.taskManager.currentIndex()))
         self.ui.findColors.clicked.connect(lambda: self.colorChanges(self.task6[0], 8))
@@ -38,19 +40,12 @@ class MyWin(QtWidgets.QMainWindow):
 
         self.ui.listColor.itemClicked.connect(lambda: self.changeImage())
 
-    # TODO finish task6
     def changeImage(self):
         item = self.ui.listColor.selectedItems()
         currentBrush = item[-1].background()
         rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
-        image_mask(rgbColor, self.files[0])
-        image = QImage()
-        if not image.load("res.jpg"):
-            self.ui.task6Image.setText(
-                "Selected file is not an image, please select another.")
-            return
-
-        self.ui.task6Image.setPixmap(QPixmap.fromImage(image))
+        image_mask(rgbColor, self.task6[0])
+        self.focus_dialog(self.cwd+"/Output6/res.jpg")
 
     def colorChanges(self, filename, number_of_colors):
         try:
@@ -71,19 +66,19 @@ class MyWin(QtWidgets.QMainWindow):
         try:
             for i in range(self.original5.__len__()):
                 image_diff(self.original5[i], self.modified5[i], "original%d.png" % i, "modified%d.png" % i)
-                self.original5[i] = "/home/mickle/PycharmProjects/TUI/Output6/original%d.png" % i
-                self.modified5[i] = "/home/mickle/PycharmProjects/TUI/Output6/modified%d.png" % i
+                self.original5[i] = self.cwd+"/Output5/original%d.png" % i
+                self.modified5[i] = self.cwd+"/Output5/modified%d.png" % i
 
             self.set_image(0, self.original5, self.ui.firstimages)
             self.set_image(0, self.modified5, self.ui.secondimages)
-        except FileNotFoundError:
-            print("there are no such files")
+        except (FileNotFoundError, IndexError) as e:
+            print(e)
 
     def do_stacking(self):
         try:
-            # delete old files from Input directory
-            for the_file in os.listdir(self.Path):
-                file_path = os.path.join(self.Path, the_file)
+            # delete old files from InputFocus directory
+            for the_file in os.listdir(self.cwd+"/InputFocus/"):
+                file_path = os.path.join(self.cwd+"/InputFocus/", the_file)
                 try:
                     if os.path.isfile(file_path):
                         os.unlink(file_path)
@@ -98,12 +93,12 @@ class MyWin(QtWidgets.QMainWindow):
                 height = 1440
                 dim = (width, height)
                 resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
-                cv2.imwrite(os.path.join(self.Path, '%d.jpg' % f), resized)
+                cv2.imwrite(os.path.join(self.cwd+"/InputFocus/", '%d.jpg' % f), resized)
                 cv2.waitKey(0)
 
             # focus-stacking starts here
             hello = self.task2
-            hello = sorted(os.listdir(self.Path))
+            hello = sorted(os.listdir(self.cwd+"/InputFocus/"))
             for img in hello:
                 if img.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
                     hello.remove(img)
@@ -112,12 +107,12 @@ class MyWin(QtWidgets.QMainWindow):
 
             for img in hello:
                 print("Reading in file {}".format(img))
-                focusimages.append(cv2.imread("/home/mickle/PycharmProjects/TUI/Input/{}".format(img)))
+                focusimages.append(cv2.imread(self.cwd+"/InputFocus/{}".format(img)))
 
             merged = FocusStack.focus_stack(focusimages)
-            cv2.imwrite("/home/mickle/PycharmProjects/TUI/merged.png", merged)
+            cv2.imwrite(self.cwd+"/OutputFocus/merged.png", merged)
             try:
-                self.focus_dialog('/home/mickle/PycharmProjects/TUI/merged.png')
+                self.focus_dialog(self.cwd+'/OutputFocus/merged.png')
             except FileNotFoundError:
                 print("There is no file called merged.png")
         except FileNotFoundError:

@@ -62,10 +62,10 @@ def align_images(images):
 
     outimages = []
 
-    if use_sift:
-        detector = cv2.xfeatures2d.SIFT_create()
-    else:
-        detector = cv2.ORB_create(1000)
+    # if use_sift:
+    #     detector = cv2.xfeatures2d.SIFT_create()
+    # else:
+    detector = cv2.ORB_create(1000)
 
     #   We assume that image 0 is the "base" image and align everything to it
     print("Detecting features of base image")
