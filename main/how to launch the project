@@ -1,4 +1,4 @@
-1. cd Path/ImageTrick
+1. cd Path/ImageTrick/main
 2.conda create -n what_do_you_want python=3.6
 3.conda activate what_do_you_want
 4. while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt 
