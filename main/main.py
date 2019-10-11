@@ -1,16 +1,21 @@
 import sys
+import time
+
 import cv2
 import numpy as np
 # import the interface
 from PyQt5.QtGui import QImage, QPixmap, QColor
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, QDialog, QVBoxLayout, QLabel, QSizePolicy
 
+from MapWindow import *
 import FocusStack
+import glob
 from image_diff import *
 from colorDetection import *
 from qtmain import *
 from image_mask import *
 from PyQt5 import QtCore, QtGui, QtWidgets
+import subprocess
 
 
 class MyWin(QtWidgets.QMainWindow):
@@ -23,11 +28,17 @@ class MyWin(QtWidgets.QMainWindow):
         self.modified5 = []
         self.task6 = []
         self.task2 = []
-        self.Path = '/home/mickle/PycharmProjects/TUI/InputFocus/'
         self.cwd = os.getcwd()
         print(self.cwd)
 
+        # BODYA
+        self.image_window = MapWindow()
+        self.ui.pushButton.clicked.connect(self.setAllOptions)
+        self.ui.pushButton.clicked.connect(self.image_window.createWindow)
+        self.ui.pushButton_2.clicked.connect(self.selectFile)
+
         self.ui.actionOpen.triggered.connect(lambda: self.openFiles(self.ui.taskManager.currentIndex()))
+        
         self.ui.findColors.clicked.connect(lambda: self.colorChanges(self.task6[0], 8))
         self.ui.l_button.clicked.connect(lambda: self.left_button(1))
         self.ui.r_button.clicked.connect(lambda: self.right_button(1))
@@ -37,15 +48,44 @@ class MyWin(QtWidgets.QMainWindow):
         self.ui.load2images.clicked.connect(lambda: self.openFiles(52))
         self.ui.actionFind_the_difference.triggered.connect(lambda: self.find_difference())
         self.ui.actionFocus_stacking.triggered.connect(lambda: self.do_stacking())
+        self.ui.actionMake_the_video.triggered.connect(lambda: self.make_video())
 
         self.ui.listColor.itemClicked.connect(lambda: self.changeImage())
 
+    def make_video(self):
+        try:
+            img_arr = []
+            # write images in Input directory
+            for f in range(self.task2.__len__()):
+                img = cv2.imread(self.task2[f])
+                width = 1920
+                height = 1440
+                dim = (width, height)
+                resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
+                cv2.imwrite(os.path.join(self.cwd + "/Input4/", '%d.jpg' % f), resized)
+                cv2.waitKey(0)
+            # fetch all images and make avi file
+            for filename in glob.glob(self.cwd + "/Input4/*.jpg"):
+                img = cv2.imread(filename)
+                height, width, layers = img.shape
+                size = (width, height)
+                img_arr.append(img)
+            out = cv2.VideoWriter(self.cwd + "/Output4/project.avi", cv2.VideoWriter_fourcc(*'DIVX'), 1, size)
+            for i in range(len(img_arr)):
+                out.write(img_arr[i])
+            out.release()
+        except Exception as e:
+            self.error_dialog(str(e))
+
     def changeImage(self):
-        item = self.ui.listColor.selectedItems()
-        currentBrush = item[-1].background()
-        rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
-        image_mask(rgbColor, self.task6[0])
-        self.focus_dialog(self.cwd+"/Output6/res.jpg")
+        try:
+            item = self.ui.listColor.selectedItems()
+            currentBrush = item[-1].background()
+            rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
+            image_mask(rgbColor, self.task6[0])
+            self.focus_dialog(self.cwd + "/Output6/res.jpg")
+        except Exception as e:
+            self.error_dialog(str(e))
 
     def colorChanges(self, filename, number_of_colors):
         try:
@@ -59,26 +99,26 @@ class MyWin(QtWidgets.QMainWindow):
                 # print(tuple(map(tuple, colors[i].astype(int))))
                 n.setBackground(QColor(colors[i]))
                 self.ui.listColor.addItem(n)
-        except IndexError:
-            print("There`s no file to proceed")
+        except Exception as e:
+            self.error_dialog(str(e))
 
     def find_difference(self):
         try:
             for i in range(self.original5.__len__()):
                 image_diff(self.original5[i], self.modified5[i], "original%d.png" % i, "modified%d.png" % i)
-                self.original5[i] = self.cwd+"/Output5/original%d.png" % i
-                self.modified5[i] = self.cwd+"/Output5/modified%d.png" % i
+                self.original5[i] = self.cwd + "/Output5/original%d.png" % i
+                self.modified5[i] = self.cwd + "/Output5/modified%d.png" % i
 
             self.set_image(0, self.original5, self.ui.firstimages)
             self.set_image(0, self.modified5, self.ui.secondimages)
-        except (FileNotFoundError, IndexError) as e:
-            print(e)
+        except Exception as e:
+            self.error_dialog(str(e))
 
     def do_stacking(self):
         try:
             # delete old files from InputFocus directory
-            for the_file in os.listdir(self.cwd+"/InputFocus/"):
-                file_path = os.path.join(self.cwd+"/InputFocus/", the_file)
+            for the_file in os.listdir(self.cwd + "/InputFocus/"):
+                file_path = os.path.join(self.cwd + "/InputFocus/", the_file)
                 try:
                     if os.path.isfile(file_path):
                         os.unlink(file_path)
@@ -93,12 +133,12 @@ class MyWin(QtWidgets.QMainWindow):
                 height = 1440
                 dim = (width, height)
                 resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
-                cv2.imwrite(os.path.join(self.cwd+"/InputFocus/", '%d.jpg' % f), resized)
+                cv2.imwrite(os.path.join(self.cwd + "/InputFocus/", '%d.jpg' % f), resized)
                 cv2.waitKey(0)
 
             # focus-stacking starts here
             hello = self.task2
-            hello = sorted(os.listdir(self.cwd+"/InputFocus/"))
+            hello = sorted(os.listdir(self.cwd + "/InputFocus/"))
             for img in hello:
                 if img.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
                     hello.remove(img)
@@ -107,16 +147,16 @@ class MyWin(QtWidgets.QMainWindow):
 
             for img in hello:
                 print("Reading in file {}".format(img))
-                focusimages.append(cv2.imread(self.cwd+"/InputFocus/{}".format(img)))
+                focusimages.append(cv2.imread(self.cwd + "/InputFocus/{}".format(img)))
 
             merged = FocusStack.focus_stack(focusimages)
-            cv2.imwrite(self.cwd+"/OutputFocus/merged.png", merged)
+            cv2.imwrite(self.cwd + "/OutputFocus/merged.png", merged)
             try:
-                self.focus_dialog(self.cwd+'/OutputFocus/merged.png')
-            except FileNotFoundError:
-                print("There is no file called merged.png")
-        except FileNotFoundError:
-            print("There are no files in self.files variable")
+                self.focus_dialog(self.cwd + '/OutputFocus/merged.png')
+            except Exception as e:
+                self.error_dialog(str(e))
+        except Exception as e:
+            self.error_dialog(str(e))
 
     # show the result as dialog
     def focus_dialog(self, file):
@@ -159,13 +199,13 @@ class MyWin(QtWidgets.QMainWindow):
                 print(self.modified5)
                 self.set_image(self.step, self.modified5, self.ui.secondimages)
             # task 6
-            elif indicator == 4:
+            elif indicator == 3:
                 self.task6 = []
                 self.step = 0
                 self.task6, _ = QFileDialog.getOpenFileNames(self, None, None, "Images (*.png *.xpm *.jpg *.jpeg)")
                 self.set_image(self.step, self.task6, self.ui.task6Image)
-        except IndexError:
-            print("list index out of range")
+        except Exception as e:
+            self.error_dialog(str(e))
 
     @staticmethod
     def set_image(step, array, image):
@@ -216,6 +256,21 @@ class MyWin(QtWidgets.QMainWindow):
         dim = (width, height)
         resized = cv2.resize(image, dim, interpolation=cv2.INTER_CUBIC)
         return resized
+
+    def error_dialog(self, error):
+        dialog = QtWidgets.QErrorMessage(self)
+        dialog.showMessage(error)
+
+    # BODYA
+    def selectFile(self):
+        self.image_window.map = ''.join(QFileDialog.getOpenFileName()[0])
+
+    def setAllOptions(self):
+        self.image_window.focus = float(self.ui.lineEdit_2.text())
+        self.image_window.parties_h = self.image_window.parties_h / int(self.ui.lineEdit_8.text())
+        self.image_window.parties_w = self.image_window.parties_w / int(self.ui.lineEdit_9.text())
+        self.image_window.height_cam = float(self.ui.lineEdit_3.text())
+        self.image_window.weight_cam = float(self.ui.lineEdit_6.text())
 
 
 if __name__ == "__main__":

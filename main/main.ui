@@ -14,14 +14,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_12">
     <item>
      <widget class="QTabWidget" name="taskManager">
       <property name="focusPolicy">
        <enum>Qt::TabFocus</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -42,6 +42,248 @@
        <attribute name="title">
         <string>Task1</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0" colspan="2">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="4" column="0" colspan="2">
+           <widget class="QLabel" name="label_3">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Фокусна відстань об'єктива, мм.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_7"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLineEdit" name="lineEdit_5"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_6">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Витрата заряду на фото, %</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_4"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLineEdit" name="lineEdit"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_5">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+              <italic>false</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>Заряд батареї на момент запуску, %</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Витрата заряду на 100м, %</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+              <italic>false</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>Допустима висота польоту, м.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QLineEdit" name="lineEdit_2"/>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="font">
+             <font>
+              <family>Abyssinica SIL</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Висота матриці</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_6"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label_4">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Геометрія  фотосенсора, мм:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="font">
+             <font>
+              <family>Abyssinica SIL</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Ширина матриці</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="1">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="font">
+             <font>
+              <family>Abyssinica SIL</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Ширина мапи</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_9"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="font">
+             <font>
+              <family>Abyssinica SIL</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Висота мапи</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label_11">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Масштаб мапи, м:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_8"/>
+          </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Вибрати мапу</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="font">
+             <font>
+              <family>aakar</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Вибрати шлях</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="task2">
        <attribute name="title">
@@ -82,9 +324,6 @@
                 <property name="text">
                  <string/>
                 </property>
-                <property name="pixmap">
-                 <pixmap>../focus-stacking/merged.png</pixmap>
-                </property>
                 <property name="scaledContents">
                  <bool>true</bool>
                 </property>
@@ -95,23 +334,6 @@
               </item>
              </layout>
             </widget>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="r_button_2">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-              <italic>true</italic>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:0px;
-color: black;</string>
-            </property>
-            <property name="text">
-             <string>&gt;</string>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -144,15 +366,26 @@ color: black;</string>
             </property>
            </widget>
           </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="r_button_2">
+            <property name="font">
+             <font>
+              <pointsize>20</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:0px;
+color: black;</string>
+            </property>
+            <property name="text">
+             <string>&gt;</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="task4">
-       <attribute name="title">
-        <string>Task4</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3"/>
       </widget>
       <widget class="QWidget" name="task5">
        <attribute name="title">
@@ -203,9 +436,6 @@ color: black;</string>
                 <property name="text">
                  <string/>
                 </property>
-                <property name="pixmap">
-                 <pixmap>../focus-stacking/merged.png</pixmap>
-                </property>
                 <property name="scaledContents">
                  <bool>true</bool>
                 </property>
@@ -240,9 +470,6 @@ color: black;</string>
                 </property>
                 <property name="text">
                  <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap>../focus-stacking/merged.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -306,6 +533,13 @@ color: black;</string>
              <widget class="QListWidget" name="listColor"/>
             </item>
             <item>
+             <widget class="QLabel" name="saturationLabel">
+              <property name="text">
+               <string>Saturation of the color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="findColors">
               <property name="text">
                <string>Find the colors</string>
@@ -354,9 +588,6 @@ color: black;</string>
                   <property name="text">
                    <string/>
                   </property>
-                  <property name="pixmap">
-                   <pixmap>../../Original/2016_0101_000725_002.JPG</pixmap>
-                  </property>
                   <property name="scaledContents">
                    <bool>true</bool>
                   </property>
@@ -395,6 +626,7 @@ color: black;</string>
      </property>
      <addaction name="actionFind_the_difference"/>
      <addaction name="actionFocus_stacking"/>
+     <addaction name="actionMake_the_video"/>
     </widget>
     <addaction name="menuAction"/>
     <addaction name="actionOpen"/>
@@ -415,6 +647,11 @@ color: black;</string>
   <action name="actionFocus_stacking">
    <property name="text">
     <string>Focus stacking</string>
+   </property>
+  </action>
+  <action name="actionMake_the_video">
+   <property name="text">
+    <string>Make the video</string>
    </property>
   </action>
  </widget>
