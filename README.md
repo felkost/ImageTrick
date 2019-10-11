@@ -7,3 +7,23 @@ https://www.facebook.com/TUI.Info/ <br>
 https://docs.google.com/document/d/1RylgSLtmbqYr-IrfhLpDRTKZaclhvRWSXMek-qaKy7k/edit?fbclid=IwAR1Bxok4yXfWWgASUke0ajelEA0OysSdYdJ2Z1SXJGCbpuzWKMZnU7CaOHk#bookmark=id.gjdgxs<br>
 Тестові зображення:
 https://drive.google.com/drive/folders/1O4PgiB72-AdqDoYVmNHvkOy_1Am_igBO
+
+## Передумови
+* ``` Python ```
+
+## Установка
+  ### Linux (Протестовано на Linux Mint 19.2):
+  * ``` cd Path/ImageTrick/main ```
+  * ``` conda create -n new_environment python=3.6 ```
+  * ``` conda activate new_environment ```
+  * ``` while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt ```
+  * ``` ./TUIprogram.sh ```
+  
+  ### Windows:
+  * Скачати Anaconda за посиланням https://www.anaconda.com/distribution/
+  * Перейти до папки проекту
+  * Відкрити ``` cmd ``` у цій папці
+  * ``` while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt ```
+  * ``` python main.py ```
+## Приклад 
+    ![picture](Images/example.png)
