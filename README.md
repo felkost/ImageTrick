@@ -12,7 +12,7 @@ https://drive.google.com/drive/folders/1O4PgiB72-AdqDoYVmNHvkOy_1Am_igBO
 * ``` Python ```
 
 ## Установка
-  ### Linux (Протестовано на Linux Mint 19.2 Tina):
+  ### Linux (Протестовано на Linux Mint 19.2):
   * ``` cd Path/ImageTrick/main ```
   * ``` conda create -n new_environment python=3.6 ```
   * ``` conda activate new_environment ```
