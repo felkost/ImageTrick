@@ -24,6 +24,7 @@ class MyWin(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.step = 0
+        self.i = 0
         self.original5 = []
         self.modified5 = []
         self.task6 = []
@@ -38,8 +39,7 @@ class MyWin(QtWidgets.QMainWindow):
         self.ui.pushButton_2.clicked.connect(self.selectFile)
 
         self.ui.actionOpen.triggered.connect(lambda: self.openFiles(self.ui.taskManager.currentIndex()))
-        
-        self.ui.findColors.clicked.connect(lambda: self.colorChanges(self.task6[0], 8))
+        self.ui.findColors.clicked.connect(lambda: self.colorChanges())
         self.ui.l_button.clicked.connect(lambda: self.left_button(1))
         self.ui.r_button.clicked.connect(lambda: self.right_button(1))
         self.ui.l_button_2.clicked.connect(lambda: self.left_button(0))
@@ -65,8 +65,8 @@ class MyWin(QtWidgets.QMainWindow):
                 cv2.imwrite(os.path.join(self.cwd + "/Input4/", '%d.jpg' % f), resized)
                 cv2.waitKey(0)
             # fetch all images and make avi file
-            for filename in glob.glob(self.cwd + "/Input4/*.jpg"):
-                img = cv2.imread(filename)
+            for f in range(self.task2.__len__()):
+                img = cv2.imread(self.task2[f])
                 height, width, layers = img.shape
                 size = (width, height)
                 img_arr.append(img)
@@ -84,15 +84,22 @@ class MyWin(QtWidgets.QMainWindow):
             rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
             image_mask(rgbColor, self.task6[0])
             self.focus_dialog(self.cwd + "/Output6/res.jpg")
+
+            # hsvColor = cv2.cvtColor(np.array(rgbColor), cv2.COLOR_RGB2HSV)
+            # print(hsvColor)
+            # print(hsvColor)
+            # measure = hsvColor[1] / 100
+            # self.ui.saturationMeasure.setText(measure)
         except Exception as e:
             self.error_dialog(str(e))
 
-    def colorChanges(self, filename, number_of_colors):
+    def colorChanges(self):
+        number_of_colors = int(self.showDialog())
         try:
             if self.ui.listColor.count() != 0:
                 self.ui.listColor.clear()
 
-            rgb, colors = get_colors(get_image(filename), number_of_colors, False)
+            rgb, colors = get_colors(get_image(self.task6[0]), number_of_colors, False)
             for i in range(colors.__len__()):
                 n = QListWidgetItem('%s' % (i + 1))
                 print(colors[i])
@@ -101,6 +108,11 @@ class MyWin(QtWidgets.QMainWindow):
                 self.ui.listColor.addItem(n)
         except Exception as e:
             self.error_dialog(str(e))
+
+    def showDialog(self):
+        text, ok = QInputDialog.getText(self, 'Input Dialog', 'Enter integer:')
+        if ok:
+            return text
 
     def find_difference(self):
         try:
@@ -150,11 +162,12 @@ class MyWin(QtWidgets.QMainWindow):
                 focusimages.append(cv2.imread(self.cwd + "/InputFocus/{}".format(img)))
 
             merged = FocusStack.focus_stack(focusimages)
-            cv2.imwrite(self.cwd + "/OutputFocus/merged.png", merged)
+            cv2.imwrite(self.cwd + "/OutputFocus/merged%d.png" % self.i, merged)
             try:
-                self.focus_dialog(self.cwd + '/OutputFocus/merged.png')
+                self.focus_dialog(self.cwd + '/OutputFocus/merged%d.png' % self.i)
             except Exception as e:
                 self.error_dialog(str(e))
+            self.i = self.i + 1
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -263,14 +276,20 @@ class MyWin(QtWidgets.QMainWindow):
 
     # BODYA
     def selectFile(self):
-        self.image_window.map = ''.join(QFileDialog.getOpenFileName()[0])
+        try:
+            self.image_window.map = ''.join(QFileDialog.getOpenFileName()[0])
+        except Exception as e:
+            self.error_dialog(str(e))
 
     def setAllOptions(self):
-        self.image_window.focus = float(self.ui.lineEdit_2.text())
-        self.image_window.parties_h = self.image_window.parties_h / int(self.ui.lineEdit_8.text())
-        self.image_window.parties_w = self.image_window.parties_w / int(self.ui.lineEdit_9.text())
-        self.image_window.height_cam = float(self.ui.lineEdit_3.text())
-        self.image_window.weight_cam = float(self.ui.lineEdit_6.text())
+        try:
+            self.image_window.focus = float(self.ui.lineEdit_2.text())
+            self.image_window.parties_h = self.image_window.parties_h / int(self.ui.lineEdit_8.text())
+            self.image_window.parties_w = self.image_window.parties_w / int(self.ui.lineEdit_9.text())
+            self.image_window.height_cam = float(self.ui.lineEdit_3.text())
+            self.image_window.weight_cam = float(self.ui.lineEdit_6.text())
+        except Exception as e:
+            self.error_dialog(str(e))
 
 
 if __name__ == "__main__":

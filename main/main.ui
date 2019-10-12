@@ -21,7 +21,7 @@
        <enum>Qt::TabFocus</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -536,6 +536,13 @@ color: black;</string>
              <widget class="QLabel" name="saturationLabel">
               <property name="text">
                <string>Saturation of the color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="saturationMeasure">
+              <property name="text">
+               <string>0.765413</string>
               </property>
              </widget>
             </item>
