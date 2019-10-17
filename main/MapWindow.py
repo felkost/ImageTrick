@@ -17,7 +17,8 @@ class Height(QDialog):
         self.lineEdit = QtWidgets.QLineEdit()
         self.lineEdit.setGeometry(QtCore.QRect(20, 60, 150, 41))
         self.lineEdit.setObjectName("lineEdit")
-        self.height = 0
+        self.height = 0.00
+        self.max_height = 0.00
         layout = QHBoxLayout()
         layout.addWidget(self.enterHeight)
         layout.addWidget(self.lineEdit)
@@ -29,8 +30,13 @@ class Height(QDialog):
             if self.lineEdit.text():
                 self.height = float(self.lineEdit.text())
             else:
-                self.height = 0
-            self.close()
+                self.height = 0.00
+            if self.height > self.max_height:
+                self.callError("Висота більша за максимальну")
+            elif self.height < 0:
+                self.callError("Дані введені не коректно")
+            else:
+                self.close()
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -38,6 +44,9 @@ class Height(QDialog):
         self.setGeometry(250, 100, 250, 100)
         self.setWindowTitle("Висота")
         self.show()
+
+    def callError(self, message):
+        QMessageBox.about(self, "Помилка", message)
 
     def error_dialog(self, error):
         dialog = QtWidgets.QErrorMessage(self)
@@ -65,34 +74,69 @@ class MapWindow(QDialog):
         self.height_poly = []
         self.weight_poly = []
         self.bool_end = False
+        self.percent_bool_end = False
+        self.percent_start = 0
+        self.percent_per_hundred = 0
+        self.percent_per_photo = 0
+        self.acces = True
+        self.percent_point = []
+        self.photo_way = []
+        self.percent = QLabel(str(self.percent_start), self)
 
     def createWindow(self):
-        self.setGeometry(250, 250, 1250, 800)
-        self.end_points.move(2, 802)
-        self.end_points.resize(500, 30)
-        self.setGeometry(250, 250, 1250, 900)
-        self.setWindowTitle("Мапа")
-        self.show()
+        try:
+            if self.acces:
+                self.percent_point.append(self.percent_start)
+                self.percent.setText("Заряд дрона " + str(self.percent_start) + "%")
+                self.percent.move(850, 5)
+                self.percent.setFont(QFont('ubuntu', 24))
+                self.end_points.move(2, 802)
+                self.end_points.resize(500, 30)
+                self.setGeometry(250, 250, 1250, 900)
+                self.setWindowTitle("Мапа")
+                self.show()
+            else:
+                self.callError("Дані введені не коректно")
+        except Exception as e:
+            self.error_dialog(str(e))
 
     def mousePressEvent(self, event):
         try:
+            heigts_difference = 0.0
             self.count += 1
             self.height_point.createWindow()
             self.points.append(np.array([event.pos().x(), event.pos().y(), 0]))
             self.focusArea(self.count)
-            if self.count > 0:
-                self.heights.append(self.height_point.height)
-            else:
-                self.heights.append(0)
+            self.heights.append(self.height_point.height)
             self.weight_poly.append(((self.weight_cam / 1000) * self.heights[self.count] / (self.focus / 1000))
                                     * self.parties_h)
             self.height_poly.append(((self.height_cam / 1000) * self.heights[self.count] / (self.focus / 1000))
                                     * self.parties_w)
             if self.count > 0:
-                self.ways[0] = int((np.linalg.norm(self.points[self.count] - self.points[0])
-                                    + self.height_poly[self.count]) / self.height_poly[self.count])
-                self.ways.append(int((np.linalg.norm(self.points[self.count - 1] - self.points[self.count])
-                                      + self.height_poly[self.count]) / self.height_poly[self.count]))
+                self.ways[0] = int(float(np.linalg.norm(self.points[self.count] - self.points[0])
+                                         + self.height_poly[self.count]) / self.height_poly[self.count])
+                self.ways.append(int(float(np.linalg.norm(self.points[self.count - 1] - self.points[self.count])
+                                           + self.height_poly[self.count]) / self.height_poly[self.count]))
+                self.percentAfterWay(self.points[self.count - 1], self.points[self.count])
+
+            if self.count == 0:
+                self.percent_point[self.count] -= (self.heights[self.count] / 100) * self.percent_per_hundred
+            else:
+                heigts_difference = self.heights[self.count] - self.heights[self.count - 1]
+                if heigts_difference > 0:
+                    self.percent_point[self.count] -= (heigts_difference / 100) * self.percent_per_hundred
+                self.percent_point[self.count] -= self.ways[self.count] * self.percent_per_photo
+            self.percent.setText("Заряд дрона " + str(self.percent_point[len(self.percent_point) - 1]) + "%")
+        except Exception as e:
+            self.error_dialog(str(e))
+
+    def percentAfterWay(self, point1, point2):
+        try:
+            point_way1 = np.array([point1[0] / self.parties_h, point1[1] / self.parties_w])
+            point_way2 = np.array([point2[0] / self.parties_h, point2[1] / self.parties_w])
+            way = np.linalg.norm(point_way1 - point_way2)
+            self.percent_point.append(self.percent_point[len(self.percent_point) - 1]
+                                      - (way / 100) * self.percent_per_hundred)
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -140,7 +184,12 @@ class MapWindow(QDialog):
                                            end_angel, temp_point[0], temp_point[1],
                                            self.weight_poly[len(self.weight_poly) - 1] -
                                            self.height_poly[len(self.height_poly) - 1]))
-
+                if self.percent_bool_end:
+                    self.percentAfterWay(self.points[len(self.points) - 1], self.points[0])
+                    self.percent_point[self.count] -= self.ways[0] * self.percent_per_photo
+                    self.percent_bool_end = False
+                self.percent.setText(
+                    "Заряд дрона " + str(int(self.percent_point[len(self.percent_point) - 1])) + "%")
             painter.end()
             self.update()
         except Exception as e:
@@ -159,7 +208,7 @@ class MapWindow(QDialog):
                 scalar_ba_bc = np.dot(vector_ba, vector_bc)
                 cos_b = scalar_ba_bc / (mod_ba * mod_bc)
                 self.angels.append(-math.degrees(math.acos(cos_b)) + self.angels[len(self.angels) - 1])
-                # return self.findPolygonPoints(i)
+
             elif i == 0:
                 self.angels.append(0)
             elif 3 > len(self.points) > 0:
@@ -173,23 +222,22 @@ class MapWindow(QDialog):
                 scalar_ba_bc = np.dot(vector_ba, vector_bc)
                 cos_b = scalar_ba_bc / (mod_ba * mod_bc)
                 self.angels.append(-math.degrees(math.acos(cos_b)) + self.angels[len(self.angels) - 1])
-                print(-math.degrees(math.acos(cos_b)) + self.angels[len(self.angels) - 1])
         except Exception as e:
             self.error_dialog(str(e))
+
+    def callError(self, message):
+        QMessageBox.about(self, "Помилка", message)
 
     def finishPoints(self):
         self.bool_end = True
 
-    def findStepLine(self, point1, point2, count, step):  # points[i - 1], points[i]
-        try:
-            len = np.linalg.norm(point1 - point2)
-            point3 = point1 + (point2 - point1) * ((count * step) / len)
-            return point3
-        except Exception as e:
-            self.error_dialog(str(e))
+    @staticmethod
+    def findStepLine(point1, point2, count, step):  # points[i - 1], points[i]
+        len = np.linalg.norm(point1 - point2)
+        point3 = point1 + (point2 - point1) * ((count * step) / len)
+        return point3
 
-    def createPolygon(self, n, r, s, x_coord, y_coord,
-                      weight):  # ОБЕРЕЖНО ГОВНОКОД!!!!!!1!!!!!1!!                           (шучу він скрізь)
+    def createPolygon(self, n, r, s, x_coord, y_coord, weight):
         try:
             polygon = QtGui.QPolygonF()
             point = []

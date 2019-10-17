@@ -6,6 +6,7 @@ import os
 def image_mask(color, filename):
     mydir = os.getcwd()
     rgb_color = np.array([color])
+    print(rgb_color)
     img = cv2.imread(filename)
     img = cv2.resize(img, (600, 400), interpolation=cv2.INTER_AREA)
     def_color = np.array([0, 0, 0])
@@ -14,7 +15,6 @@ def image_mask(color, filename):
 
     # create the Mask
     mask = cv2.inRange(img, def_color, rgb_color)
-    mask = 255-mask
 
     res = cv2.bitwise_and(img, img, mask=mask)
-    cv2.imwrite(mydir + '/Output6/res.jpg', res)
+    cv2.imwrite(mydir + '/OutputColorDetection/res.jpg', res)
