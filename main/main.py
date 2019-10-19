@@ -25,6 +25,7 @@ class LoadingDialog(QDialog):
         super(LoadingDialog, self).__init__(*args, **kwargs)
 
         self.setWindowTitle("ImageTrick")
+        self.setWindowIcon(QtGui.QIcon('drone.png'))
         self.resize(200, 100)
         self.layout = QVBoxLayout()
         self.label = QLabel()
@@ -37,6 +38,7 @@ class MyWin(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_MainWindow()
+        self.setWindowIcon(QtGui.QIcon('drone.png'))
         self.ui.setupUi(self)
         self.step = 0
         self.i = 0
