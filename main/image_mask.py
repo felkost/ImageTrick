@@ -6,7 +6,6 @@ import os
 def image_mask(color, filename):
     mydir = os.getcwd()
     rgb_color = np.array([color])
-    print(rgb_color)
     img = cv2.imread(filename)
     img = cv2.resize(img, (600, 400), interpolation=cv2.INTER_AREA)
     def_color = np.array([0, 0, 0])

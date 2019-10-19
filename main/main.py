@@ -1,5 +1,6 @@
 import sys
 import time
+import random
 
 import cv2
 import ffmpeg
@@ -200,22 +201,19 @@ class MyWin(QtWidgets.QMainWindow):
             image_mask(rgbColor, self.task6[0])
             self.focus_dialog(self.cwd + "/OutputColorDetection/res.jpg")
 
-            # color = np.uint8([[[rgbColor]]])
-            # hsvColor = cv2.cvtColor(color, cv2.COLOR_RGB2HSV)
-            # measure = hsvColor[1] / 100
-            #self.ui.saturationMeasure.setText(str(measure))
+            saturation = self.saturation_of_color(rgbColor[0], rgbColor[1], rgbColor[2])
+            self.ui.saturationMeasure.setText(str(saturation)+"%")
         except Exception as e:
             self.error_dialog(str(e))
 
     def colorChanges(self):
         dlg = LoadingDialog(self)
         dlg.show()
-        number_of_colors = int(self.showDialog("Кількість кольорів: "))
         try:
             if self.ui.listColor.count() != 0:
                 self.ui.listColor.clear()
 
-            rgb, colors = get_colors(get_image(self.task6[0]), number_of_colors, False)
+            rgb, colors = get_colors(get_image(self.task6[0]), int(self.showDialog("Кількість кольорів: ")), False)
             for i in range(colors.__len__()):
                 n = QListWidgetItem('%s' % (i + 1))
                 n.setBackground(QColor(colors[i]))
@@ -364,6 +362,27 @@ class MyWin(QtWidgets.QMainWindow):
                     self.set_image(self.step, self.modified5, self.ui.secondimages)
         except IndexError:
             self.error_dialog("list index out of range")
+
+    @staticmethod
+    def saturation_of_color(r, g, b):
+        r, g, b = r / 255.0, g / 255.0, b / 255.0
+        mx = max(r, g, b)
+        mn = min(r, g, b)
+        df = mx - mn
+        if mx == mn:
+            h = 0
+        elif mx == r:
+            h = (60 * ((g - b) / df) + 360) % 360
+        elif mx == g:
+            h = (60 * ((b - r) / df) + 120) % 360
+        elif mx == b:
+            h = (60 * ((r - g) / df) + 240) % 360
+        if mx == 0:
+            s = 0
+        else:
+            s = (df / mx) * 100
+        v = mx * 100
+        return s
 
     @staticmethod
     def resize_image(image):
