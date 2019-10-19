@@ -1,6 +1,5 @@
 import sys
 import time
-import random
 
 import cv2
 import ffmpeg
@@ -204,8 +203,7 @@ class MyWin(QtWidgets.QMainWindow):
             # color = np.uint8([[[rgbColor]]])
             # hsvColor = cv2.cvtColor(color, cv2.COLOR_RGB2HSV)
             # measure = hsvColor[1] / 100
-            measure = random.uniform(0.0, 1.0)
-            self.ui.saturationMeasure.setText(str(measure))
+            #self.ui.saturationMeasure.setText(str(measure))
         except Exception as e:
             self.error_dialog(str(e))
 
