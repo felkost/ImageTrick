@@ -40,7 +40,7 @@
       </property>
       <widget class="QWidget" name="task1">
        <attribute name="title">
-        <string>Task1</string>
+        <string>Завдання 1</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0" colspan="2">
@@ -287,10 +287,10 @@
       </widget>
       <widget class="QWidget" name="task2">
        <attribute name="title">
-        <string>Task2</string>
+        <string>Завдання 2</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
          <layout class="QGridLayout" name="focusStacking">
           <item row="1" column="1">
            <widget class="QScrollArea" name="scrollArea_3">
@@ -387,9 +387,221 @@ color: black;</string>
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="task4">
+       <attribute name="title">
+        <string>Завдання 4</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QWidget" name="layoutWidget">
+           <layout class="QGridLayout" name="task4Grid">
+            <item row="1" column="1">
+             <widget class="QScrollArea" name="scrollArea_5">
+              <property name="minimumSize">
+               <size>
+                <width>800</width>
+                <height>600</height>
+               </size>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_4">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>798</width>
+                 <height>598</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QLabel" name="image_label_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>36</pointsize>
+                    <italic>true</italic>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="l_button_3">
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+                <italic>true</italic>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border:0px;
+color: black;</string>
+              </property>
+              <property name="text">
+               <string notr="true">&lt;</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>40</width>
+                <height>40</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="filename_label_2">
+              <property name="text">
+               <string>hello.png</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPushButton" name="r_button_3">
+              <property name="font">
+               <font>
+                <pointsize>20</pointsize>
+                <italic>true</italic>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border:0px;
+color: black;</string>
+              </property>
+              <property name="text">
+               <string>&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="formLayoutWidget">
+           <layout class="QFormLayout" name="formLayout">
+            <item row="1" column="0">
+             <widget class="QLabel" name="longLabel">
+              <property name="text">
+               <string>Longitude</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="longitudeEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="latLabel">
+              <property name="text">
+               <string>Latitude</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="latitudeEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="altLabel">
+              <property name="text">
+               <string>Altitude</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="altitudeEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="rollLabel">
+              <property name="text">
+               <string>Roll</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="rollEdit"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="pitchLabel">
+              <property name="text">
+               <string>Pitch</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="pitchEdit"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="yawLabel">
+              <property name="text">
+               <string>Yaw</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QLineEdit" name="yawEdit"/>
+            </item>
+            <item row="7" column="0" colspan="2">
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>2000</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="8" column="0" colspan="2">
+             <widget class="QPushButton" name="addButton">
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="2">
+             <spacer name="verticalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>10</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="task5">
        <attribute name="title">
-        <string>Task5</string>
+        <string>Завдання 5</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
@@ -505,7 +717,7 @@ color: black;</string>
       </widget>
       <widget class="QWidget" name="task6">
        <attribute name="title">
-        <string>Task6</string>
+        <string>Завдання 6</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
@@ -611,11 +823,11 @@ color: black;</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Файл</string>
     </property>
     <widget class="QMenu" name="menuAction">
      <property name="title">
-      <string>Action</string>
+      <string>Дія</string>
      </property>
      <addaction name="actionFocus_stacking"/>
      <addaction name="actionMake_the_video"/>
@@ -634,22 +846,22 @@ color: black;</string>
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Відкрити</string>
    </property>
   </action>
   <action name="actionFocus_stacking">
    <property name="text">
-    <string>Focus stacking</string>
+    <string>Фокус стекінг</string>
    </property>
   </action>
   <action name="actionMake_the_video">
    <property name="text">
-    <string>Make the video</string>
+    <string>Зробити відео</string>
    </property>
   </action>
   <action name="actionOptical_Flow">
    <property name="text">
-    <string>Optical Flow</string>
+    <string>Оптичний потік</string>
    </property>
   </action>
  </widget>

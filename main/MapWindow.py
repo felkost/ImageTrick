@@ -80,7 +80,7 @@ class MapWindow(QDialog):
         if self.acces:
             self.percent_point.append(self.percent_start)
             self.percent.setText("Заряд дрона " + str(self.percent_start) + "%")
-            self.percent.move(850, 5)
+            self.percent.move(850, 2)
             self.percent.setFont(QFont('ubuntu', 24))
             self.end_points.move(2, 802)
             self.end_points.resize(500, 30)
@@ -142,7 +142,8 @@ class MapWindow(QDialog):
                 for j in range(self.ways[i]):
                     temp_point = self.findStepLine(self.points[i - 1], self.points[i], j, self.height_poly[i])
                     painter.drawPolygon(
-                        self.createPolygon(4, math.sqrt(self.height_poly[i] ** 2 + self.height_poly[i] ** 2) / 2,  # радіус рівний половині діагоналі
+                        self.createPolygon(4, math.sqrt(self.height_poly[i] ** 2 + self.height_poly[i] ** 2) / 2,
+                                           # радіус рівний половині діагоналі
                                            self.angels[i], temp_point[0], temp_point[1],
                                            self.weight_poly[i] - self.height_poly[i]))
         if self.bool_end:
@@ -174,7 +175,6 @@ class MapWindow(QDialog):
         painter.end()
         self.update()
 
-
     def focusArea(self, i):
         if len(self.points) > 2:
             a = self.points[i - 2]
@@ -186,7 +186,7 @@ class MapWindow(QDialog):
             mod_bc = np.linalg.norm(c - b)
             scalar_ba_bc = np.dot(vector_ba, vector_bc)
             cos_b = scalar_ba_bc / (mod_ba * mod_bc)
-            self.angels.append(-math.degrees(math.acos(cos_b)) + self.angels[len(self.angels)-1])
+            self.angels.append(-math.degrees(math.acos(cos_b)) + self.angels[len(self.angels) - 1])
 
         elif i == 0:
             self.angels.append(0)

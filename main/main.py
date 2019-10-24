@@ -48,6 +48,7 @@ class MyWin(QtWidgets.QMainWindow):
         self.modified5 = []
         self.task6 = []
         self.task2 = []
+        self.task4 = []
         self.cwd = os.getcwd()
 
         # BODYA
@@ -61,102 +62,24 @@ class MyWin(QtWidgets.QMainWindow):
         self.ui.findColors.clicked.connect(lambda: self.colorChanges())
         self.ui.l_button.clicked.connect(lambda: self.left_button(1))
         self.ui.r_button.clicked.connect(lambda: self.right_button(1))
+        self.ui.l_button_3.clicked.connect(lambda: self.left_button(2))
+        self.ui.r_button_3.clicked.connect(lambda: self.right_button(2))
         self.ui.l_button_2.clicked.connect(lambda: self.left_button(0))
         self.ui.r_button_2.clicked.connect(lambda: self.right_button(0))
         self.ui.actionFocus_stacking.triggered.connect(lambda: self.do_stacking())
-        self.ui.actionMake_the_video.triggered.connect(lambda: self.make_video())
+        self.ui.actionMake_collage.triggered.connect(lambda: self.make_collage())
 
         self.ui.listColor.itemClicked.connect(lambda: self.changeImage())
 
-    def make_video(self):
-        try:
-            # delete old files from InputFocus directory
-            for the_file in os.listdir(self.cwd + "/InputVideo/"):
-                file_path = os.path.join(self.cwd + "/InputVideo/", the_file)
-                try:
-                    if os.path.isfile(file_path):
-                        os.unlink(file_path)
-                except Exception as e:
-                    self.error_dialog(str(e))
-            # write images in Input directory
-            for f in range(self.task2.__len__()):
-                img = cv2.imread(self.task2[f])
-                width = 1920
-                height = 1440
-                dim = (width, height)
-                resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
-                cv2.imwrite(os.path.join(self.cwd + "/InputVideo/", '%d.jpg' % f), resized)
-                cv2.waitKey(0)
-            # fetch all images and make mp4 file
-            (
-                ffmpeg
-                .input(self.cwd + '/InputVideo/*.jpg', pattern_type='glob', framerate=int(self.showDialog("FPS: ")))
-                .output(self.cwd + '/OutputVideo/movie%d.mp4' % self.k)
-                .overwrite_output()
-                .run()
-            )
-            self.show_video(self.cwd + '/OutputVideo/movie%d.mp4' % self.k)
-            self.k = self.k + 1
-        except Exception as e:
-            self.error_dialog(str(e))
-
-    def show_video(self, file):
-        cap = cv2.VideoCapture(file)
-
-        # Check if camera opened successfully
-        if not cap.isOpened():
-            self.error_dialog("Error opening video stream or file")
-
-        # Read until video is completed
-        while cap.isOpened():
-            # Capture frame-by-frame
-            ret, frame = cap.read()
-            if ret:
-
-                # Display the resulting frame
-                cv2.imshow('Frame', frame)
-                cv2.waitKey(200)
-                # Press Q on keyboard to  exit
-                if cv2.waitKey(210) & 0xFF == ord('q'):
-                    break
-
-            # Break the loop
-            else:
-                break
-
-        # When everything done, release the video capture object
-        cap.release()
-
-        # Closes all the frames
-        cv2.destroyAllWindows()
+    def make_collage(self):
+        a = 228
+        # BODYA PUT YOUR SHIT CODE HERE
 
     def optical_flow(self):
         try:
-            # delete old files from InputFocus directory
-            for the_file in os.listdir(self.cwd + "/InputVideo/"):
-                file_path = os.path.join(self.cwd + "/InputVideo/", the_file)
-                try:
-                    if os.path.isfile(file_path):
-                        os.unlink(file_path)
-                except Exception as e:
-                    self.error_dialog(str(e))
-            # write images in Input directory
-            for f in range(self.task2.__len__()):
-                img = cv2.imread(self.task2[f])
-                width = 1920
-                height = 1440
-                dim = (width, height)
-                resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
-                cv2.imwrite(os.path.join(self.cwd + "/InputVideo/", '%d.jpg' % f), resized)
-                cv2.waitKey(0)
-            # fetch all images and make mp4 file
-            (
-                ffmpeg
-                .input(self.cwd + '/InputVideo/*.jpg', pattern_type='glob', framerate=int(self.showDialog("FPS: ")))
-                .output(self.cwd + '/OutputFLow/movie%d.mp4' % self.j)
-                .overwrite_output()
-                .run()
-            )
+            self.deleteFromInput(self.cwd + "/InputVideo/")
+            self.writeToInput(self.task2, self.cwd + "/InputVideo/")
+            self.make_video(self.cwd + '/InputVideo/*.jpg', self.cwd + '/OutputFLow/movie%d.mp4' % self.j)
             cap = cv2.VideoCapture(self.cwd + '/OutputFLow/movie%d.mp4' % self.j)
             self.j = self.j + 1
 
@@ -202,7 +125,7 @@ class MyWin(QtWidgets.QMainWindow):
             self.focus_dialog(self.cwd + "/OutputColorDetection/res.jpg")
 
             saturation = self.saturation_of_color(rgbColor[0], rgbColor[1], rgbColor[2])
-            self.ui.saturationMeasure.setText(str(saturation)+"%")
+            self.ui.saturationMeasure.setText(str(saturation) + "%")
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -222,34 +145,12 @@ class MyWin(QtWidgets.QMainWindow):
         except Exception as e:
             self.error_dialog(str(e))
 
-    def showDialog(self, text):
-        text, ok = QInputDialog.getText(self, 'Input Dialog', text)
-        if ok:
-            return text
-
     def do_stacking(self):
         try:
             dlg = LoadingDialog(self)
             dlg.show()
-            # delete old files from InputFocus directory
-            for the_file in os.listdir(self.cwd + "/InputFocus/"):
-                file_path = os.path.join(self.cwd + "/InputFocus/", the_file)
-                try:
-                    if os.path.isfile(file_path):
-                        os.unlink(file_path)
-                except Exception as e:
-                    self.error_dialog(str(e))
-
-            # add images that are showed right now and resize them
-            ar_length = len(self.task2)
-            for f in range(ar_length):
-                img = cv2.imread(self.task2[f])
-                width = 1920
-                height = 1440
-                dim = (width, height)
-                resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
-                cv2.imwrite(os.path.join(self.cwd + "/InputFocus/", '%d.jpg' % f), resized)
-                cv2.waitKey(0)
+            self.deleteFromInput(self.cwd + "/InputFocus/")
+            self.writeToInput(self.task2, self.cwd + "/InputFocus/")
 
             # focus-stacking starts here
             hello = self.task2
@@ -274,23 +175,9 @@ class MyWin(QtWidgets.QMainWindow):
         except Exception as e:
             self.error_dialog(str(e))
 
-    # show the result as dialog
-    def focus_dialog(self, file):
-        dialog = QDialog(self)
-        dialog.setWindowTitle("ImageTrick")
-        dialog.resize(800, 600)
-        vbox = QVBoxLayout()
-        label = QLabel()
-        label.setScaledContents(True)
-        image = QPixmap(file)
-        label.setPixmap(image)
-        label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        vbox.addWidget(label)
-        dialog.setLayout(vbox)
-        dialog.show()
-
     def openFiles(self, indicator):
         try:
+            print(indicator)
             # task 2
             if indicator == 1:
                 self.task2 = []
@@ -299,20 +186,16 @@ class MyWin(QtWidgets.QMainWindow):
                                                                                                  "*.jpg *.jpeg)")
                 self.set_image(self.step, self.task2, self.ui.image_label)
                 self.ui.filename_label.setText(self.task2[self.step])
-            # task 5
-            elif indicator == 51:
+            # task 4
+            elif indicator == 2:
+                self.task4 = []
                 self.step = 0
-                self.original5, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project",
-                                                                 "Images (*.png *.xpm *.jpg *.jpeg)")
-                self.set_image(self.step, self.original5, self.ui.firstimages)
-            # task 5
-            elif indicator == 52:
-                self.step = 0
-                self.modified5, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project",
-                                                                 "Images (*.png *.xpm *.jpg *.jpeg)")
-                self.set_image(self.step, self.modified5, self.ui.secondimages)
+                self.task4, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project", "Images (*.png *.xpm "
+                                                                                                 "*.jpg *.jpeg)")
+                self.set_image(self.step, self.task4, self.ui.image_label_2)
+                self.ui.filename_label_2.setText(self.task4[self.step])
             # task 6
-            elif indicator == 3:
+            elif indicator == 4:
                 self.task6 = []
                 self.step = 0
                 self.task6, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project", "Images (*.png *.xpm "
@@ -320,17 +203,6 @@ class MyWin(QtWidgets.QMainWindow):
                 self.set_image(self.step, self.task6, self.ui.task6Image)
         except Exception as e:
             self.error_dialog(str(e))
-
-    @staticmethod
-    def set_image(step, array, image):
-        file = array[step]
-        fimage = QImage()
-        if not fimage.load(file):
-            image.setText(
-                "Selected file is not an image, please select another.")
-            return
-
-        image.setPixmap(QPixmap.fromImage(fimage))
 
     # display last image
     def left_button(self, indicator):
@@ -340,6 +212,10 @@ class MyWin(QtWidgets.QMainWindow):
                     self.step -= 1
                     self.set_image(self.step, self.task2, self.ui.image_label)
                     self.ui.filename_label.setText(self.task2[self.step])
+                if indicator == 2:
+                    self.step -= 1
+                    self.set_image(self.step, self.task4, self.ui.image_label_2)
+                    self.ui.filename_label.setText(self.task4[self.step])
                 else:
                     self.step -= 1
                     self.set_image(self.step, self.original5, self.ui.firstimages)
@@ -355,6 +231,11 @@ class MyWin(QtWidgets.QMainWindow):
                     self.step += 1
                     self.set_image(self.step, self.task2, self.ui.image_label)
                     self.ui.filename_label.setText(self.task2[self.step])
+            elif indicator == 2:
+                if self.step <= self.task4.__len__() - 1:
+                    self.step += 1
+                    self.set_image(self.step, self.task4, self.ui.image_label_2)
+                    self.ui.filename_label.setText(self.task4[self.step])
             else:
                 if self.step <= self.original5.__len__() - 1:
                     self.step += 1
@@ -362,6 +243,100 @@ class MyWin(QtWidgets.QMainWindow):
                     self.set_image(self.step, self.modified5, self.ui.secondimages)
         except IndexError:
             self.error_dialog("list index out of range")
+
+    def make_video(self, inputdir, outputdir):
+        try:
+            # fetch all images and make mp4 file
+            (
+                ffmpeg
+                    .input(inputdir, pattern_type='glob', framerate=int(self.showDialog("FPS: ")))
+                    .output(outputdir)
+                    .overwrite_output()
+                    .run()
+            )
+        except Exception as e:
+            self.error_dialog(str(e))
+
+    def show_video(self, file):
+        cap = cv2.VideoCapture(file)
+
+        # Check if camera opened successfully
+        if not cap.isOpened():
+            self.error_dialog("Error opening video stream or file")
+
+        # Read until video is completed
+        while cap.isOpened():
+            # Capture frame-by-frame
+            ret, frame = cap.read()
+            if ret:
+
+                # Display the resulting frame
+                cv2.imshow('Frame', frame)
+                cv2.waitKey(200)
+                # Press Q on keyboard to  exit
+                if cv2.waitKey(210) & 0xFF == ord('q'):
+                    break
+
+            # Break the loop
+            else:
+                break
+
+        # When everything done, release the video capture object
+        cap.release()
+
+        # Closes all the frames
+        cv2.destroyAllWindows()
+
+    @staticmethod
+    def writeToInput(array, directory):
+        # write images in Input directory
+        for f in range(array.__len__()):
+            img = cv2.imread(array[f])
+            width = 1920
+            height = 1440
+            dim = (width, height)
+            resized = cv2.resize(img, dim, interpolation=cv2.INTER_CUBIC)
+            cv2.imwrite(os.path.join(directory, '%d.jpg' % f), resized)
+            cv2.waitKey(0)
+
+    @staticmethod
+    def deleteFromInput(directory):
+        # delete old files from InputFocus directory
+        for the_file in os.listdir(directory):
+            file_path = os.path.join(directory, the_file)
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+
+    def showDialog(self, text):
+        text, ok = QInputDialog.getText(self, 'Input Dialog', text)
+        if ok:
+            return text
+
+    # show the result as dialog
+    def focus_dialog(self, file):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("ImageTrick")
+        dialog.resize(800, 600)
+        vbox = QVBoxLayout()
+        label = QLabel()
+        label.setScaledContents(True)
+        image = QPixmap(file)
+        label.setPixmap(image)
+        label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        vbox.addWidget(label)
+        dialog.setLayout(vbox)
+        dialog.show()
+
+    @staticmethod
+    def set_image(step, array, image):
+        file = array[step]
+        fimage = QImage()
+        if not fimage.load(file):
+            image.setText(
+                "Selected file is not an image, please select another.")
+            return
+
+        image.setPixmap(QPixmap.fromImage(fimage))
 
     @staticmethod
     def saturation_of_color(r, g, b):
@@ -468,6 +443,8 @@ class MyWin(QtWidgets.QMainWindow):
             for i in self.start_acces:
                 if not i:
                     self.image_window.acces = False
+                    self.image_window.parties_h = 800
+                    self.image_window.parties_w = 1250
 
             self.image_window.createWindow()
         except Exception as e:
