@@ -21,7 +21,7 @@
        <enum>Qt::TabFocus</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>4</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideMiddle</enum>
@@ -585,10 +585,13 @@ color: black;</string>
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>10</height>
+                <height>15</height>
                </size>
               </property>
              </spacer>
@@ -733,14 +736,14 @@ color: black;</string>
             <item>
              <widget class="QLabel" name="saturationLabel">
               <property name="text">
-               <string>Saturation of the color</string>
+               <string>Яскравість кольору</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="saturationMeasure">
               <property name="text">
-               <string>0.765413</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -782,6 +785,19 @@ color: black;</string>
                 </sizepolicy>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_7">
+                <item>
+                 <widget class="QLabel" name="image_filename">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>hello.png</string>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QLabel" name="task6Image">
                   <property name="sizePolicy">
@@ -830,7 +846,7 @@ color: black;</string>
       <string>Дія</string>
      </property>
      <addaction name="actionFocus_stacking"/>
-     <addaction name="actionMake_the_video"/>
+     <addaction name="actionMake_collage"/>
      <addaction name="actionOptical_Flow"/>
     </widget>
     <addaction name="menuAction"/>
@@ -854,9 +870,9 @@ color: black;</string>
     <string>Фокус стекінг</string>
    </property>
   </action>
-  <action name="actionMake_the_video">
+  <action name="actionMake_collage">
    <property name="text">
-    <string>Зробити відео</string>
+    <string>Зробити колаж</string>
    </property>
   </action>
   <action name="actionOptical_Flow">

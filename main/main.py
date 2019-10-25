@@ -1,3 +1,7 @@
+from multiprocessing import freeze_support
+
+freeze_support()
+
 import sys
 import time
 import random
@@ -17,6 +21,7 @@ from qtmain import *
 from image_mask import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 import subprocess
+import os
 
 
 class LoadingDialog(QDialog):
@@ -25,7 +30,7 @@ class LoadingDialog(QDialog):
         super(LoadingDialog, self).__init__(*args, **kwargs)
 
         self.setWindowTitle("ImageTrick")
-        self.setWindowIcon(QtGui.QIcon('drone.png'))
+        self.setWindowIcon(QtGui.QIcon('src/drone.png'))
         self.resize(200, 100)
         self.layout = QVBoxLayout()
         self.label = QLabel()
@@ -38,7 +43,7 @@ class MyWin(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_MainWindow()
-        self.setWindowIcon(QtGui.QIcon('drone.png'))
+        self.setWindowIcon(QtGui.QIcon('src/drone.png'))
         self.ui.setupUi(self)
         self.step = 0
         self.i = 0
@@ -49,6 +54,7 @@ class MyWin(QtWidgets.QMainWindow):
         self.task6 = []
         self.task2 = []
         self.task4 = []
+        self.rgbColors = []
         self.cwd = os.getcwd()
 
         # BODYA
@@ -79,8 +85,9 @@ class MyWin(QtWidgets.QMainWindow):
         try:
             self.deleteFromInput(self.cwd + "/InputVideo/")
             self.writeToInput(self.task2, self.cwd + "/InputVideo/")
-            self.make_video(self.cwd + '/InputVideo/*.jpg', self.cwd + '/OutputFLow/movie%d.mp4' % self.j)
-            cap = cv2.VideoCapture(self.cwd + '/OutputFLow/movie%d.mp4' % self.j)
+            directory = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
+            self.make_video(self.cwd + '/InputVideo/*.jpg', directory + '/movie%d.mp4' % self.j)
+            cap = cv2.VideoCapture(directory + '/movie%d.mp4' % self.j)
             self.j = self.j + 1
 
             ret, first_frame = cap.read()
@@ -99,8 +106,8 @@ class MyWin(QtWidgets.QMainWindow):
                 mask[..., 2] = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX)
                 rgb = cv2.cvtColor(mask, cv2.COLOR_HSV2BGR)
                 cv2.imshow("dense optical flow", rgb)
-                cv2.imwrite(os.getcwd() + '/OutputFLow/flow' + str(i) + '.jpg', rgb)
-                self.modified5.append(os.getcwd() + '/OutputFLow/flow' + str(i) + '.jpg')
+                cv2.imwrite(directory + '/flow' + str(i) + '.jpg', rgb)
+                self.modified5.append(directory + '/flow' + str(i) + '.jpg')
                 i = i + 1
                 prev_gray = gray
                 if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -121,10 +128,12 @@ class MyWin(QtWidgets.QMainWindow):
             item = self.ui.listColor.selectedItems()
             currentBrush = item[-1].background()
             rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
-            image_mask(rgbColor, self.task6[0])
-            self.focus_dialog(self.cwd + "/OutputColorDetection/res.jpg")
-
             saturation = self.saturation_of_color(rgbColor[0], rgbColor[1], rgbColor[2])
+            # color = np.array(self.rgbColors[item[-1].background()])
+            directory = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
+            image_mask(rgbColor, self.task6[0], directory + '/res%d.jpg' % self.k)
+            self.focus_dialog(directory + "/res%d.jpg" % self.k)
+            self.k = self.k + 1
             self.ui.saturationMeasure.setText(str(saturation) + "%")
         except Exception as e:
             self.error_dialog(str(e))
@@ -136,7 +145,8 @@ class MyWin(QtWidgets.QMainWindow):
             if self.ui.listColor.count() != 0:
                 self.ui.listColor.clear()
 
-            rgb, colors = get_colors(get_image(self.task6[0]), int(self.showDialog("Кількість кольорів: ")), False)
+            self.rgbColors, colors = get_colors(get_image(self.task6[0]), int(self.showDialog("Кількість кольорів: ")),
+                                                False)
             for i in range(colors.__len__()):
                 n = QListWidgetItem('%s' % (i + 1))
                 n.setBackground(QColor(colors[i]))
@@ -149,26 +159,30 @@ class MyWin(QtWidgets.QMainWindow):
         try:
             dlg = LoadingDialog(self)
             dlg.show()
-            self.deleteFromInput(self.cwd + "/InputFocus/")
-            self.writeToInput(self.task2, self.cwd + "/InputFocus/")
+            # self.deleteFromInput(self.cwd + "/InputFocus/")
+            # self.writeToInput(self.task2, self.cwd + "/InputFocus/")
 
             # focus-stacking starts here
-            hello = self.task2
-            hello = sorted(os.listdir(self.cwd + "/InputFocus/"))
-            for img in hello:
-                if img.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
-                    hello.remove(img)
+            # hello = self.task2
+            # hello = sorted(os.listdir(self.cwd + "/InputFocus/"))
+            # for img in hello:
+            #   if img.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
+            #        hello.remove(img)
 
             focusimages = []
 
-            for img in hello:
-                focusimages.append(cv2.imread(self.cwd + "/InputFocus/{}".format(img)))
+            for i in range(self.task2.__len__()):
+                focusimages.append(cv2.imread(self.task2[i]))
 
             merged = FocusStack.focus_stack(focusimages)
-            cv2.imwrite(self.cwd + "/OutputFocus/merged%d.png" % self.i, merged)
+            directory = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
+            print(directory)
+            cv2.imwrite(directory + "/merged%d.png" % self.i, merged)
+            # cv2.imwrite(self.cwd + "/OutputFocus/merged%d.png" % self.i, merged)
             dlg.close()
             try:
-                self.focus_dialog(self.cwd + '/OutputFocus/merged%d.png' % self.i)
+                self.focus_dialog(directory + "/merged%d.png" % self.i)
+                # self.focus_dialog(self.cwd + '/OutputFocus/merged%d.png' % self.i)
             except Exception as e:
                 self.error_dialog(str(e))
             self.i = self.i + 1
@@ -182,25 +196,26 @@ class MyWin(QtWidgets.QMainWindow):
             if indicator == 1:
                 self.task2 = []
                 self.step = 0
-                self.task2, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project", "Images (*.png *.xpm "
-                                                                                                 "*.jpg *.jpeg)")
+                self.task2, _ = QFileDialog.getOpenFileNames(self, None, "", "Images (*.png *.xpm "
+                                                                             "*.jpg *.jpeg)")
                 self.set_image(self.step, self.task2, self.ui.image_label)
                 self.ui.filename_label.setText(self.task2[self.step])
             # task 4
             elif indicator == 2:
                 self.task4 = []
                 self.step = 0
-                self.task4, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project", "Images (*.png *.xpm "
-                                                                                                 "*.jpg *.jpeg)")
+                self.task4, _ = QFileDialog.getOpenFileNames(self, None, "", "Images (*.png *.xpm "
+                                                                             "*.jpg *.jpeg)")
                 self.set_image(self.step, self.task4, self.ui.image_label_2)
                 self.ui.filename_label_2.setText(self.task4[self.step])
             # task 6
             elif indicator == 4:
                 self.task6 = []
                 self.step = 0
-                self.task6, _ = QFileDialog.getOpenFileNames(self, None, "/home/mickle/Project", "Images (*.png *.xpm "
-                                                                                                 "*.jpg *.jpeg)")
+                self.task6, _ = QFileDialog.getOpenFileNames(self, None, "", "Images (*.png *.xpm "
+                                                                             "*.jpg *.jpeg)")
                 self.set_image(self.step, self.task6, self.ui.task6Image)
+                self.ui.image_filename.setText(self.task6[0])
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -374,7 +389,7 @@ class MyWin(QtWidgets.QMainWindow):
     # BODYA
     def selectFile(self):
         try:
-            self.image_window.map = ''.join(QFileDialog.getOpenFileName(self, None, "/home/mickle/Project")[0])
+            self.image_window.map = ''.join(QFileDialog.getOpenFileName(self, None, "")[0])
         except Exception as e:
             self.error_dialog(str(e))
 
