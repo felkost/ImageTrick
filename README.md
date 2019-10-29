@@ -19,7 +19,6 @@ https://drive.google.com/drive/folders/1O4PgiB72-AdqDoYVmNHvkOy_1Am_igBO
   * Біля рядку ``` name: ``` вказати назву середовища
   * ``` conda create -f env.yml ```
   * ``` conda activate your_environment ```
-  * ``` while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt ```
   * ``` ./TUIprogram.sh ```
   
 ## Допомога користувачу
