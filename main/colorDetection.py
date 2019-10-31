@@ -1,5 +1,4 @@
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 import cv2
 from collections import Counter
 
@@ -29,8 +28,4 @@ def get_colors(image, number_of_colors, show_chart):
     hex_colors = [RGB2HEX(ordered_colors[i]) for i in counts.keys()]
     rgb_colors = [ordered_colors[i] for i in counts.keys()]
 
-    if show_chart:
-        plt.figure(figsize=(8, 6))
-        plt.pie(counts.values(), labels=hex_colors, colors=hex_colors)
-        plt.show()
     return rgb_colors, hex_colors

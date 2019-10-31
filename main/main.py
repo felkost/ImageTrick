@@ -55,7 +55,6 @@ class MyWin(QtWidgets.QMainWindow):
         self.task2 = []
         self.task4 = []
         self.rgbColors = []
-        self.cwd = os.getcwd()
 
         # BODYA
         self.image_window = MapWindow()
@@ -83,11 +82,11 @@ class MyWin(QtWidgets.QMainWindow):
 
     def optical_flow(self):
         try:
-            self.deleteFromInput(self.cwd + "/InputVideo/")
-            self.writeToInput(self.task2, self.cwd + "/InputVideo/")
-            directory = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
-            self.make_video(self.cwd + '/InputVideo/*.jpg', directory + '/movie%d.mp4' % self.j)
-            cap = cv2.VideoCapture(directory + '/movie%d.mp4' % self.j)
+            input_dir = os.path.dirname(os.path.realpath(self.task2[0]))
+            print(input_dir)
+            output_dir = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
+            self.make_video(input_dir + '/*.jpg', output_dir + '/movie%d.mp4' % self.j)
+            cap = cv2.VideoCapture(output_dir + '/movie%d.mp4' % self.j)
             self.j = self.j + 1
 
             ret, first_frame = cap.read()
@@ -106,8 +105,8 @@ class MyWin(QtWidgets.QMainWindow):
                 mask[..., 2] = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX)
                 rgb = cv2.cvtColor(mask, cv2.COLOR_HSV2BGR)
                 cv2.imshow("dense optical flow", rgb)
-                cv2.imwrite(directory + '/flow' + str(i) + '.jpg', rgb)
-                self.modified5.append(directory + '/flow' + str(i) + '.jpg')
+                cv2.imwrite(output_dir + '/flow' + str(i) + '.jpg', rgb)
+                self.modified5.append(output_dir + '/flow' + str(i) + '.jpg')
                 i = i + 1
                 prev_gray = gray
                 if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -127,14 +126,14 @@ class MyWin(QtWidgets.QMainWindow):
         try:
             item = self.ui.listColor.selectedItems()
             currentBrush = item[-1].background()
-            rgbColor = currentBrush.color().red(), currentBrush.color().green(), currentBrush.color().blue()
-            saturation = self.saturation_of_color(rgbColor[0], rgbColor[1], rgbColor[2])
-            # color = np.array(self.rgbColors[item[-1].background()])
+            bgrColor = np.uint8([[[currentBrush.color().blue(), currentBrush.color().green(),
+                                   currentBrush.color().red()]]])
+            # saturation = self.saturation_of_color(rgbColor[0], rgbColor[1], rgbColor[2])
             directory = str(QFileDialog.getExistingDirectory(self, "SelectDirectory"))
-            image_mask(rgbColor, self.task6[0], directory + '/res%d.jpg' % self.k)
+            image_mask(bgrColor, self.task6[0], directory + '/res%d.jpg' % self.k)
             self.focus_dialog(directory + "/res%d.jpg" % self.k)
             self.k = self.k + 1
-            self.ui.saturationMeasure.setText(str(saturation) + "%")
+            # self.ui.saturationMeasure.setText(str(saturation) + "%")
         except Exception as e:
             self.error_dialog(str(e))
 
@@ -191,6 +190,9 @@ class MyWin(QtWidgets.QMainWindow):
 
     def openFiles(self, indicator):
         try:
+            current = os.path.realpath(__file__)
+            print(current)
+            print(os.getcwd())
             print(indicator)
             # task 2
             if indicator == 1:
